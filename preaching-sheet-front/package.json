@@ -2,7 +2,7 @@
   "name": "preaching-sheet-front",
   "version": "1.0.0",
   "description": "Aplicación Electron + Angular para gestión de planillas de predicación",
-  "main": "main.js",
+  "main": "electron/main/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -58,8 +58,7 @@
     "files": [
       "dist/**/*",
       "node_modules/**/*",
-      "splash/*",
-      "main.js"
+      "electron/**/*"
     ],
     "win": {
       "target": "nsis",
