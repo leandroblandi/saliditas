@@ -1,0 +1,150 @@
+<div class="conductors-container">
+  <div class="conductors-header">
+    <h1>Gestión de Conductores</h1>
+    <p>Administra los conductores y sus roles ministeriales</p>
+  </div>
+  <!-- Tabla de conductores -->
+  <mat-card class="table-card">
+    <mat-card-header *ngIf="totalElements > 0 && statusCode === 200">
+      <mat-card-title>Lista de Conductores</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Empty State cuando no hay conductores -->
+      <app-empty-state 
+        *ngIf="!dataSource.data || dataSource.data.length === 0 && statusCode === 200"
+        icon="people"
+        title="No hay conductores registrados"
+        description="Aún no se han registrado conductores en el sistema. Los conductores aparecerán aquí una vez que sean creados."
+        [showAction]="false">
+      </app-empty-state>
+
+      <app-empty-state 
+        *ngIf="statusCode === 429"
+        icon="schedule"
+        title="Has alcanzado el límite de peticiones"
+        description="Espera 30 segundos para poder continuar"
+        [showAction]="false">
+      </app-empty-state>
+
+      <!-- Contenido cuando hay conductores -->
+      <div *ngIf="dataSource.data && dataSource.data.length > 0 && statusCode === 200">
+        <!-- Filtro de búsqueda -->
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Buscar conductor</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Escriba para filtrar...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Tabla -->
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" class="conductors-table">
+            <!-- Columna Nombre -->
+            <ng-container matColumnDef="fullName">
+              <th mat-header-cell *matHeaderCellDef 
+                  (click)="sortByColumn('fullName')" 
+                  class="sortable-header"
+                  >
+                Nombre Completo
+                <mat-icon [class.disabled]="!isSortingAllowed()" class="sort-icon">{{ getSortIcon('fullName') }}</mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let conductor"> {{ conductor.full_name }} </td>
+            </ng-container>
+
+            <!-- Columna Rol -->
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef 
+                  (click)="sortByColumn('role')" 
+                  class="sortable-header"
+                  >
+                Rol
+                <mat-icon [class.disabled]="!isSortingAllowed()" class="sort-icon">{{ getSortIcon('role') }}</mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let conductor">
+                <span class="role-badge" [class]="getRoleClass(conductor.role)">
+                  {{ getRoleLabel(conductor.role) }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Columna Estado -->
+            <ng-container matColumnDef="active">
+              <th mat-header-cell *matHeaderCellDef 
+                  (click)="sortByColumn('active')" 
+                  class="sortable-header"
+                  >
+                Estado
+                <mat-icon [class.disabled]="!isSortingAllowed()" class="sort-icon">{{ getSortIcon('active') }}</mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let conductor">
+                <mat-icon [class]="conductor.active ? 'active-icon' : 'inactive-icon'">
+                  {{ conductor.active ? 'check_circle' : 'cancel' }}
+                </mat-icon>
+                {{ conductor.active ? 'Activo' : 'Inactivo' }}
+              </td>
+            </ng-container>
+
+            <!-- Columna Salidas de Predicación -->
+            <ng-container matColumnDef="preachingCount">
+              <th mat-header-cell *matHeaderCellDef 
+                  (click)="sortByColumn('preachingCount')" 
+                  class="sortable-header"
+                  >
+                Salidas
+                <mat-icon [class.disabled]="!isSortingAllowed()" class="sort-icon">{{ getSortIcon('preachingCount') }}</mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let conductor">
+                <span class="preaching-count" [class.high-count]="conductor.preaching_count > 10">
+                  {{ conductor.preaching_count }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Columna Fecha Creación -->
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef 
+                  (click)="sortByColumn('createdAt')" 
+                  class="sortable-header"
+                  >
+                Fecha Creación
+                <mat-icon [class.disabled]="!isSortingAllowed()" class="sort-icon">{{ getSortIcon('createdAt') }}</mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let conductor"> {{ conductor.created_at | date:'dd/MM/yyyy' }} </td>
+            </ng-container>
+
+            <!-- Columna Acciones -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Acción</th>
+              <td mat-cell *matCellDef="let conductor">
+                <button mat-icon-button color="warn" (click)="deleteConductor(conductor.id!)"
+                        matTooltip="Eliminar conductor">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <!-- Paginador -->
+          <mat-paginator [length]="totalElements"
+                         [pageSize]="pageSize"
+                         [pageIndex]="currentPage"
+                         [pageSizeOptions]="[5, 10, 25, 50]"
+                         showFirstLastButtons
+                         (page)="onPageChange($event)">
+          </mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+    <!-- Botón para agregar nuevo conductor -->
+    <div class="add-conductor-section">
+        <button mat-raised-button color="primary" (click)="openAddConductorModal()" class="add-button">
+          <mat-icon>person_add</mat-icon>
+          Agregar Nuevo Conductor
+        </button>
+    </div>
+
+</div>

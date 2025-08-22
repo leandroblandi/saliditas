@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Saliditas - Cargando</title>
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      /* Gradiente gris claro → blanco */
+      background: linear-gradient(135deg, #e0e0e0 0%, #ffffff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      text-align: center;
+      color: #555;
+    }
+
+    h2 {
+      font-size: 3rem;
+      margin: 0 0 20px 0;
+      font-weight: 8700;
+      color: #333;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #555;
+    }
+
+    /* Loader simple pero con glow */
+    .loader {
+      margin-top: 30px;
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0,0,0,0.1);
+      border-top-color: #555;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 15px rgba(85,85,85,0.5);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Saliditas!</h2>
+    <p>Cargando...</p>
+    <div class="loader"></div>
+  </div>
+</body>
+</html>

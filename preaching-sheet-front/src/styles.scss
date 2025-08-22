@@ -1,0 +1,53 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Material Icons configuration */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Global styles */
+html, body { 
+  height: 100%; 
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Ensure Material Icons display correctly */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Global card styling - tono más oscuro */
+.mat-mdc-card {
+  background-color: #fff !important;
+  border: 1px solid #f0f0f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  transition: box-shadow 0.2s ease-in-out !important;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  }
+}
+
+/* Card headers con mejor contraste */
+.mat-mdc-card-header {
+  .mat-mdc-card-title {
+    color: #212121 !important;
+    font-weight: 600 !important;
+  }
+  
+  .mat-mdc-card-subtitle {
+    color: #616161 !important;
+  }
+}

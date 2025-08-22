@@ -1,0 +1,105 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Visualiza estadísticas generales y accede rápidamente a las funciones principales del sistema.</p>
+  </div>
+
+  <!-- Tarjetas de estadísticas -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ totalConductors }}</h3>
+          <p>Total de Conductores</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ activeConductors }}</h3>
+          <p>Conductores Activos</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>calendar_today</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ totalWeeks }}</h3>
+          <p>Semanas Registradas</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>event</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ currentWeekEvents }}</h3>
+          <p>Eventos Esta Semana</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Gráfico y acciones rápidas -->
+  <div class="dashboard-content">
+    <div class="chart-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Distribución de Roles Ministeriales</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas baseChart
+              [data]="pieChartData"
+              [type]="pieChartType"
+              [labels]="pieChartLabels"
+              [options]="pieChartOptions">
+            </canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="actions-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Acciones Rápidas</mat-card-title>
+          <mat-card-subtitle>Accede rápidamente a las funciones principales del sistema</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" routerLink="/new-weekly">
+              <mat-icon>add</mat-icon>
+              Nueva Salida Semanal
+            </button>
+            
+            <button mat-raised-button color="accent" routerLink="/conductors">
+              <mat-icon>person_add</mat-icon>
+              Gestionar Conductores
+            </button>
+            
+            <button mat-raised-button color="warn" routerLink="/previous-weeks">
+              <mat-icon>history</mat-icon>
+              Ver Salidas Anteriores
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

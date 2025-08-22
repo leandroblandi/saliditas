@@ -1,0 +1,35 @@
+.previous-weeks-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.previous-weeks-container h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.previous-weeks-container .sub-header {
+  color: #666;
+  font-size: 1rem;
+  margin: 0 0 24px 0;
+}
+
+.weeks-table {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .previous-weeks-container {
+    padding: 16px;
+  }
+  
+  .previous-weeks-container h1 {
+    font-size: 28px;
+    font-weight: 700;
+  }
+}

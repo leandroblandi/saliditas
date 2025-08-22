@@ -1,0 +1,73 @@
+<div class="new-weekly-container">
+  <h1>Nueva salida semanal</h1>
+  <p class="sub-header">Programa las salidas de predicación semanales con fechas, horarios y conductores asignados.</p>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div formArrayName="preachingEvents" class="events-list">
+          <div *ngFor="let group of preachingEvents.controls; let i = index" [formGroupName]="i" class="event-item">
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Hora (HH:mm)</mat-label>
+                <input matInput formControlName="time" placeholder="08:30">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="wide">
+                <mat-label>Punto de encuentro</mat-label>
+                <input matInput formControlName="appointmentPlace" placeholder="Plaza central...">
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Conductor</mat-label>
+                <mat-select formControlName="conductorId">
+                  <mat-option *ngFor="let c of conductors" [value]="c.id">{{ c.full_name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Grupo</mat-label>
+                <input matInput formControlName="group" placeholder="Grupo 1">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="wide">
+                <mat-label>Territorios</mat-label>
+                <input matInput formControlName="territories" placeholder="12, 13, 14">
+              </mat-form-field>
+            </div>
+
+            <div class="row actions">
+              <button type="button" mat-stroked-button color="warn" (click)="removeEvent(i)" [disabled]="preachingEvents.length === 1">
+                <mat-icon>remove_circle</mat-icon>
+                Quitar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-actions">
+          <button type="button" mat-stroked-button color="primary" (click)="addEvent()">
+            <mat-icon>add_circle</mat-icon>
+            Agregar evento
+          </button>
+
+          <span class="spacer"></span>
+
+          <button type="submit" mat-raised-button color="primary">
+            <mat-icon>save</mat-icon>
+            Guardar planilla
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

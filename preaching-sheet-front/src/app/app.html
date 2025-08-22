@@ -1,0 +1,27 @@
+<mat-toolbar class="app-toolbar">
+  <span class="brand">
+    <mat-icon>polymer</mat-icon>
+    {{ title() }}
+  </span>
+  <span class="spacer"></span>
+  <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <mat-icon>dashboard</mat-icon>
+    Dashboard
+  </a>
+  <a mat-button routerLink="/new-weekly" routerLinkActive="active">
+    <mat-icon>calendar_today</mat-icon>
+    Nueva salida
+  </a>
+  <a mat-button routerLink="/previous-weeks" routerLinkActive="active">
+    <mat-icon>history</mat-icon>
+    Salidas anteriores
+  </a>
+  <a mat-button routerLink="/conductors" routerLinkActive="active">
+    <mat-icon>person</mat-icon>
+    Conductores
+  </a>
+</mat-toolbar>
+
+<main class="app-content">
+  <router-outlet />
+</main>

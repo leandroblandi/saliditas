@@ -1,0 +1,157 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  text-align: left;
+  margin-bottom: 32px;
+  
+  h1 {
+    color: #000;
+    margin-bottom: 8px;
+    font-size: 32px;
+    font-weight: 700;
+  }
+  
+  p {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  mat-card-content {
+    display: flex;
+    align-items: center;
+    padding: 24px;
+    
+    .stat-icon {
+      margin-right: 16px;
+      
+      mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        color: #1976d2;
+      }
+    }
+    
+    .stat-info {
+      h3 {
+        margin: 0 0 8px 0;
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: #1976d2;
+      }
+      
+      p {
+        margin: 0;
+        color: #666;
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-section {
+  mat-card {
+    height: 100%;
+    
+    .chart-container {
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+.actions-section {
+      
+  mat-card-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  
+
+  mat-card {
+    padding: 30px;
+    height: 100%;
+    
+    .action-buttons {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      
+      button {
+        height: 56px;
+        font-size: 1rem;
+        
+        mat-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  
+  .stat-card mat-card-content {
+    padding: 16px;
+    
+    .stat-icon mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+    
+    .stat-info h3 {
+      font-size: 2rem;
+    }
+  }
+}

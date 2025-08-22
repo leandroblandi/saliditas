@@ -1,0 +1,15 @@
+<div class="empty-state-container">
+  <div class="empty-state-content">
+    <div class="empty-state-icon">
+      <mat-icon>{{ icon }}</mat-icon>
+    </div>
+    
+    <h3 class="empty-state-title">{{ title }}</h3>
+    
+    <p class="empty-state-description">{{ description }}</p>
+    
+    <div class="empty-state-actions" *ngIf="showAction">
+      <ng-content select="[empty-state-action]"></ng-content>
+    </div>
+  </div>
+</div>
