@@ -10,9 +10,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Person, MinistryRole, MinistryRoleLabels } from '../../models/person.model';
 import { PersonService } from '../../services/person.service';
-import { EmptyStateComponent } from '../../shared/components/empty-state';
+import { EmptyStateComponent, SkeletonTableComponent } from '../../shared';
 import { ConductorModalComponent, ConductorModalData } from './conductor-modal';
 
 
@@ -31,7 +32,9 @@ import { ConductorModalComponent, ConductorModalData } from './conductor-modal';
     MatPaginatorModule,
     MatSortModule,
     MatSnackBarModule,
-    EmptyStateComponent
+    MatProgressBarModule,
+    EmptyStateComponent,
+    SkeletonTableComponent
   ],
   templateUrl: './conductors.component.html',
   styleUrls: ['./conductors.component.scss']
@@ -47,6 +50,10 @@ export class ConductorsComponent implements OnInit {
   pageSize = 5;
 
   statusCode: number = 200;
+  isLoading = false;
+  
+  // Array para generar filas de skeleton
+  skeletonRows = Array(5).fill(0);
   
   // Propiedades para sorting del servidor
   currentSort: string = 'fullName';
@@ -81,6 +88,9 @@ export class ConductorsComponent implements OnInit {
   }
 
   loadConductors(): void {
+    this.isLoading = true;
+    this.statusCode = 200;
+    
     this.personService.getAll(this.currentPage, this.pageSize, this.currentSort, this.currentSortDirection).subscribe({
       next: (response) => {
         if (response.success && response.data) {
@@ -97,10 +107,12 @@ export class ConductorsComponent implements OnInit {
             this.paginator.length = this.totalElements;
           }
         }
+        this.isLoading = false;
       },
       error: (error) => {
         this.statusCode = error.status;
         this.showMessage('Error al cargar conductores', 'error');
+        this.isLoading = false;
       }
     });
   }

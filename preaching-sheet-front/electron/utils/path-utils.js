@@ -18,8 +18,8 @@ class PathUtils {
   static getBackendPath() {
     const isDev = !app.isPackaged;
     return isDev
-      ? path.join(__dirname, '..', '..', 'backend', 'ps-api.exe')
-      : path.join(process.resourcesPath, 'backend', 'ps-api.exe');
+      ? path.join(__dirname, '..', '..', 'backend','ps-api', 'ps-api.exe')
+      : path.join(process.resourcesPath, 'backend', 'ps-api', 'ps-api.exe');
   }
 
   /**
@@ -55,6 +55,27 @@ class PathUtils {
    */
   static getFaviconPath() {
     return path.join(this.getPublicPath(), 'favicon.ico');
+  }
+
+  /**
+   * Gets the Python service path based on environment
+   * @deprecated Use getImageGeneratorApiPath() instead
+   */
+  static getPythonServicePath() {
+    const isDev = !app.isPackaged;
+    return isDev
+      ? path.join(__dirname, '..', '..', '..', 'excel-to-image-service')
+      : path.join(process.resourcesPath, 'excel-to-image-service');
+  }
+
+  /**
+   * Gets the Image Generator API path based on environment
+   */
+  static getImageGeneratorApiPath() {
+    const isDev = !app.isPackaged;
+    return isDev
+      ? path.join(__dirname, '..', '..', 'backend','image-generator-api')
+      : path.join(process.resourcesPath, 'backend', 'image-generator-api');
   }
 }
 

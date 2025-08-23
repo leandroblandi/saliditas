@@ -36,6 +36,11 @@ const BuilderConfig = {
       from: 'backend/',
       to: 'backend',
       filter: ['**/*']
+    },
+    {
+      from: '../excel-to-image-service/',
+      to: 'excel-to-image-service',
+      filter: ['**/*']
     }
   ],
   

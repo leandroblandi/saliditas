@@ -1,4 +1,4 @@
-import { PreachingEvent } from './preaching-event.model';
+import { PreachingEvent, CreatePreachingEventDto } from './preaching-event.model';
 
 export interface WeeklyPreaching {
   id?: number;
@@ -12,13 +12,4 @@ export interface WeeklyPreaching {
 
 export interface CreateWeeklyPreachingDto {
   preachingEvents: CreatePreachingEventDto[];
-}
-
-export interface CreatePreachingEventDto {
-  date: Date;
-  time: string;
-  appointmentPlace: string;
-  conductorId: number;
-  group: string;
-  territories: string;
 }

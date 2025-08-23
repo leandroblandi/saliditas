@@ -4,9 +4,16 @@
 
   <mat-card>
     <mat-card-content>
+      <!-- Skeleton loading -->
+      <app-skeleton-table 
+        *ngIf="isLoading"
+        [skeletonRows]="skeletonRows"
+        [columns]="[1,2,3,4]">
+      </app-skeleton-table>
+
       <!-- Empty State cuando no hay datos -->
       <app-empty-state 
-        *ngIf="!dataSource.data || dataSource.data.length === 0"
+        *ngIf="!isLoading && (!dataSource.data || dataSource.data.length === 0)"
         icon="history"
         title="No hay salidas semanales registradas"
         description="Aún no se han registrado salidas semanales. Las salidas aparecerán aquí una vez que sean creadas."
@@ -21,7 +28,7 @@
       </app-empty-state>
 
       <!-- Tabla cuando hay datos -->
-      <div *ngIf="dataSource.data && dataSource.data.length > 0">
+      <div *ngIf="!isLoading && dataSource.data && dataSource.data.length > 0">
         <table mat-table [dataSource]="dataSource" matSort class="weeks-table">
           <!-- Periodo -->
           <ng-container matColumnDef="period">
@@ -45,10 +52,32 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Acciones </th>
             <td mat-cell *matCellDef="let w">
-              <button mat-stroked-button color="primary" (click)="export(w)">
-                <mat-icon>download</mat-icon>
-                Exportar Excel
-              </button>
+              <div class="action-buttons">
+                <button mat-stroked-button 
+                        color="primary" 
+                        [disabled]="isExportingExcel(w.id)"
+                        (click)="export(w)">
+                  <mat-spinner *ngIf="isExportingExcel(w.id)" 
+                               diameter="16" 
+                               class="button-spinner"></mat-spinner>
+                  <mat-icon *ngIf="!isExportingExcel(w.id)">download</mat-icon>
+                  <span [class.loading-text]="isExportingExcel(w.id)">
+                    {{ isExportingExcel(w.id) ? 'Descargando...' : 'Exportar Excel' }}
+                  </span>
+                </button>
+                <button mat-stroked-button 
+                        color="accent" 
+                        [disabled]="isExportingImage(w.id)"
+                        (click)="exportToImage(w)">
+                  <mat-spinner *ngIf="isExportingImage(w.id)" 
+                               diameter="16" 
+                               class="button-spinner"></mat-spinner>
+                  <mat-icon *ngIf="!isExportingImage(w.id)">image</mat-icon>
+                  <span [class.loading-text]="isExportingImage(w.id)">
+                    {{ isExportingImage(w.id) ? 'Generando...' : 'Exportar Imagen' }}
+                  </span>
+                </button>
+              </div>
             </td>
           </ng-container>
 

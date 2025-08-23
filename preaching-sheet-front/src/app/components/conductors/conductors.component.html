@@ -9,9 +9,16 @@
       <mat-card-title>Lista de Conductores</mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <!-- Skeleton loading -->
+      <app-skeleton-table 
+        *ngIf="isLoading"
+        [skeletonRows]="skeletonRows"
+        [columns]="[1,2,3,4,5,6]">
+      </app-skeleton-table>
+
       <!-- Empty State cuando no hay conductores -->
       <app-empty-state 
-        *ngIf="!dataSource.data || dataSource.data.length === 0 && statusCode === 200"
+        *ngIf="!isLoading && (!dataSource.data || dataSource.data.length === 0) && statusCode === 200"
         icon="people"
         title="No hay conductores registrados"
         description="Aún no se han registrado conductores en el sistema. Los conductores aparecerán aquí una vez que sean creados."
@@ -19,7 +26,7 @@
       </app-empty-state>
 
       <app-empty-state 
-        *ngIf="statusCode === 429"
+        *ngIf="!isLoading && statusCode === 429"
         icon="schedule"
         title="Has alcanzado el límite de peticiones"
         description="Espera 30 segundos para poder continuar"
@@ -27,7 +34,7 @@
       </app-empty-state>
 
       <!-- Contenido cuando hay conductores -->
-      <div *ngIf="dataSource.data && dataSource.data.length > 0 && statusCode === 200">
+      <div *ngIf="!isLoading && dataSource.data && dataSource.data.length > 0 && statusCode === 200">
         <!-- Filtro de búsqueda -->
         <mat-form-field appearance="outline" class="search-field">
           <mat-label>Buscar conductor</mat-label>

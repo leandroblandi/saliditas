@@ -7,6 +7,16 @@
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div formArrayName="preachingEvents" class="events-list">
           <div *ngFor="let group of preachingEvents.controls; let i = index" [formGroupName]="i" class="event-item">
+            <!-- Checkbox para evento especial -->
+            <div class="special-event-checkbox">
+              <mat-checkbox 
+                formControlName="specialEvent" 
+                (change)="onSpecialEventChange($event, i)"
+                color="primary">
+                Evento especial (Reunión de congregación, Asamblea, etc.)
+              </mat-checkbox>
+            </div>
+
             <div class="row">
               <mat-form-field appearance="outline">
                 <mat-label>Fecha</mat-label>
@@ -15,18 +25,19 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field appearance="outline">
+              <mat-form-field appearance="outline" *ngIf="!isSpecialEvent(i)">
                 <mat-label>Hora (HH:mm)</mat-label>
                 <input matInput formControlName="time" placeholder="08:30">
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="wide">
-                <mat-label>Punto de encuentro</mat-label>
-                <input matInput formControlName="appointmentPlace" placeholder="Plaza central...">
+                <mat-label>{{ isSpecialEvent(i) ? 'Descripción del evento especial' : 'Punto de encuentro' }}</mat-label>
+                <input matInput formControlName="appointmentPlace" 
+                       [placeholder]="isSpecialEvent(i) ? 'Ej: Reunión de congregación' : 'Plaza central...'">
               </mat-form-field>
             </div>
 
-            <div class="row">
+            <div class="row" *ngIf="!isSpecialEvent(i)">
               <mat-form-field appearance="outline">
                 <mat-label>Conductor</mat-label>
                 <mat-select formControlName="conductorId">

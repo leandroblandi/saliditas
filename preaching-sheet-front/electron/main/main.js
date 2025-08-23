@@ -1,157 +1,159 @@
 const { app } = require('electron');
-const WindowManager = require('./window-manager');
 const BackendManager = require('./backend-manager');
+const WindowManager = require('./window-manager');
+const ImageGeneratorServiceManager = require('./python-service-manager');
 const HealthChecker = require('./health-checker');
 const Logger = require('../utils/logger');
 
 /**
- * Main Electron application
+ * Main application class
  */
-class ElectronApp {
+class MainApp {
   constructor() {
-    this.windowManager = new WindowManager();
     this.backendManager = new BackendManager();
+    this.windowManager = new WindowManager();
+    this.imageGeneratorServiceManager = new ImageGeneratorServiceManager();
     this.healthChecker = new HealthChecker();
-    this.isInitialized = false;
-    this.isCleaningUp = false;
+    
+    this.setupEventHandlers();
   }
 
   /**
-   * Initializes the application
+   * Sets up event handlers for the application
    */
-  async initialize() {
+  setupEventHandlers() {
+    // Handle app ready event
+    app.whenReady().then(() => {
+      this.onAppReady();
+    });
+
+    // Handle window closed event
+    app.on('window-all-closed', () => {
+      this.onAllWindowsClosed();
+    });
+
+    // Handle app activate event (macOS)
+    app.on('activate', () => {
+      this.onAppActivate();
+    });
+
+    // Handle app before quit event
+    app.on('before-quit', () => {
+      this.onAppBeforeQuit();
+    });
+  }
+
+  /**
+   * Called when the app is ready
+   */
+  async onAppReady() {
+    Logger.info('Application ready, starting services...');
+    
     try {
-      Logger.info('Initializing Electron application...');
-      
-      // Create splash window
-      this.windowManager.createSplash();
-      
-      // Start backend
+      // Start backend service
       const backendStarted = this.backendManager.startBackend();
-      if (!backendStarted) {
-        throw new Error('Could not start backend');
-      }
-
-      // Wait for backend to be available
-      await this.healthChecker.waitForBackend();
       
-      // Create main window
+      // Start image generator service
+      const imageGeneratorServiceStarted = this.imageGeneratorServiceManager.startImageGeneratorService();
+      
+      if (backendStarted && imageGeneratorServiceStarted) {
+        Logger.info('All services started successfully');
+        
+        // Wait for image generator service to be ready
+        Logger.info('Waiting for Image Generator API service to be ready...');
+        const serviceReady = await this.imageGeneratorServiceManager.waitForServiceReady(30000, 1000);
+        
+        if (serviceReady) {
+          Logger.info('Image Generator API service is ready');
+          
+          // Start health checker
+          this.healthChecker.startHealthCheck();
+          
+          // Create main window
+          this.windowManager.createMainWindow();
+        } else {
+          Logger.error('Image Generator API service failed to become ready');
+          app.quit();
+        }
+      } else {
+        Logger.error('Failed to start one or more services');
+        app.quit();
+      }
+    } catch (error) {
+      Logger.error('Error during app initialization:', error);
+      app.quit();
+    }
+  }
+
+  /**
+   * Called when all windows are closed
+   */
+  onAllWindowsClosed() {
+    Logger.info('All windows closed');
+    
+    // On macOS, keep the app running when all windows are closed
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  }
+
+  /**
+   * Called when the app is activated (macOS)
+   */
+  onAppActivate() {
+    Logger.info('App activated');
+    
+    // On macOS, re-create the window when the dock icon is clicked
+    if (process.platform === 'darwin' && !this.windowManager.getMainWindow()) {
       this.windowManager.createMainWindow();
-      
-      this.isInitialized = true;
-      Logger.info('Application initialized successfully');
-      
-    } catch (error) {
-      Logger.error('Error during initialization:', error);
-      this.handleInitializationError(error);
     }
   }
 
   /**
-   * Handles initialization errors
+   * Called before the app quits
    */
-  handleInitializationError(error) {
-    const splashWin = this.windowManager.getSplashWindow();
+  onAppBeforeQuit() {
+    Logger.info('Application quitting, cleaning up...');
     
-    if (splashWin) {
-      splashWin.webContents.executeJavaScript(`
-        document.body.innerHTML = '<div style="text-align:center;padding:20px;color:red;">
-          <h3>Error starting application</h3>
-          <p>${error.message}</p>
-          <button onclick="window.close()">Close</button>
-        </div>';
-      `);
-    }
-  }
-
-  /**
-   * Cleans up resources when closing
-   */
-  async cleanup() {
-    if (this.isCleaningUp) {
-      Logger.info('Cleanup already in progress, skipping...');
-      return;
+    // Stop health checker
+    this.healthChecker.stopHealthCheck();
+    
+    // Stop backend service
+    this.backendManager.stopBackend();
+    
+    // Stop image generator service
+    this.imageGeneratorServiceManager.stopImageGeneratorService();
+    
+    // Force kill any remaining processes
+    if (this.imageGeneratorServiceManager.isImageGeneratorServiceRunning()) {
+      Logger.warn('Image Generator service still running, force killing...');
+      this.imageGeneratorServiceManager.forceKillAllImageGeneratorServices();
     }
     
-    this.isCleaningUp = true;
-    Logger.info('Cleaning up application resources...');
-    
-    try {
-      // Stop health monitoring
-      this.healthChecker.stopHealthMonitoring();
-      
-      // Stop backend
-      this.backendManager.stopBackend();
-      
-      // Wait a bit for graceful shutdown
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Force kill if still running
-      if (this.backendManager.isBackendRunning()) {
-        Logger.warn('Backend still running, force killing...');
-        this.backendManager.forceKillAllBackends();
-      }
-      
-      // Close windows
-      this.windowManager.closeAllWindows();
-      
-      Logger.info('Cleanup completed');
-    } catch (error) {
-      Logger.error('Error during cleanup:', error);
-    } finally {
-      this.isCleaningUp = false;
-    }
+    Logger.info('Cleanup completed');
   }
 }
 
 // Global application instance
-const electronApp = new ElectronApp();
-
-// Application events
-app.on('ready', async () => {
-  await electronApp.initialize();
-});
-
-app.on('window-all-closed', async () => {
-  if (process.platform !== 'darwin') {
-    await electronApp.cleanup();
-    app.quit();
-  }
-});
-
-app.on('before-quit', async () => {
-  await electronApp.cleanup();
-});
-
-app.on('will-quit', async () => {
-  // Ensure cleanup happens before app quits
-  await electronApp.cleanup();
-});
-
-app.on('activate', () => {
-  // On macOS, re-create the window when clicking the dock icon
-  if (process.platform === 'darwin' && !electronApp.windowManager.getMainWindow()) {
-    electronApp.windowManager.createMainWindow();
-  }
-});
+const mainApp = new MainApp();
 
 // Handle process termination signals
 process.on('SIGINT', async () => {
   Logger.info('SIGINT received, shutting down...');
-  await electronApp.cleanup();
+  // The cleanup logic is now handled within MainApp.onAppBeforeQuit
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
   Logger.info('SIGTERM received, shutting down...');
-  await electronApp.cleanup();
+  // The cleanup logic is now handled within MainApp.onAppBeforeQuit
   process.exit(0);
 });
 
 // Unhandled error handling
 process.on('uncaughtException', async (error) => {
   Logger.error('Uncaught exception:', error);
-  await electronApp.cleanup();
+  // The cleanup logic is now handled within MainApp.onAppBeforeQuit
   app.quit();
 });
 

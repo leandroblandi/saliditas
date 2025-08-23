@@ -87,11 +87,12 @@ export class WeeklyPreachingService {
     const backendData = {
       preaching_events: weeklyPreaching.preachingEvents.map(event => ({
         date: event.date,
-        time: event.time,
+        time: event.specialEvent ? null : event.time,
         appointment_place: event.appointmentPlace,
-        conductor_id: event.conductorId,
-        group: event.group,
-        territories: event.territories
+        conductor_id: event.specialEvent ? null : event.conductorId,
+        group: event.specialEvent ? null : event.group,
+        territories: event.specialEvent ? null : event.territories,
+        special_event: event.specialEvent || false
       }))
     };
     return this.apiService.post<WeeklyPreaching>(this.endpoint, backendData);

@@ -10,13 +10,15 @@ export interface PreachingEvent {
   territories: string;
   createdAt?: Date;
   updatedAt?: Date;
+  specialEvent?: boolean;
 }
 
 export interface CreatePreachingEventDto {
   date: Date;
-  time: string;
+  time?: string;
   appointmentPlace: string;
-  conductorId: number;
-  group: string;
-  territories: string;
+  conductorId?: number;
+  group?: string;
+  territories?: string;
+  specialEvent?: boolean;
 }

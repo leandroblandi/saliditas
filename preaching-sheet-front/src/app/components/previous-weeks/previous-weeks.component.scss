@@ -2,19 +2,19 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-}
 
-.previous-weeks-container h1 {
-  font-size: 32px;
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 8px;
-}
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 8px;
+  }
 
-.previous-weeks-container .sub-header {
-  color: #666;
-  font-size: 1rem;
-  margin: 0 0 24px 0;
+  .sub-header {
+    color: #666;
+    font-size: 1rem;
+    margin: 0 0 24px 0;
+  }
 }
 
 .weeks-table {
@@ -22,14 +22,66 @@
   margin-top: 1rem;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  button {
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .button-spinner {
+      margin-right: 4px;
+    }
+
+    .loading-text {
+      font-size: 14px;
+      
+      &.loading-text {
+        color: inherit;
+      }
+    }
+  }
+}
+
+// Estilos para el spinner del botón
+::ng-deep .button-spinner {
+  .mat-mdc-progress-spinner svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  .mat-mdc-progress-spinner circle {
+    stroke: currentColor;
+  }
+}
+
 // Responsive
 @media (max-width: 768px) {
   .previous-weeks-container {
     padding: 16px;
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
   }
-  
-  .previous-weeks-container h1 {
-    font-size: 28px;
-    font-weight: 700;
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+    
+    button {
+      min-width: 100%;
+    }
   }
 }

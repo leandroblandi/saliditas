@@ -37,9 +37,25 @@ const AppConfig = {
   // Backend configuration
   backend: {
     healthCheckUrl: 'http://localhost:8082/psa/api/status',
-    startupTimeout: 50000, // 30 seconds
+    startupTimeout: 50000, // 50 seconds
     healthCheckInterval: 1000, // 1 second
     port: 8082
+  },
+
+  // Image Generator API service configuration
+  imageGeneratorService: {
+    healthCheckUrl: 'http://localhost:5001/health',
+    startupTimeout: 50000, // 50 seconds
+    healthCheckInterval: 1000, // 1 second
+    port: 5001
+  },
+
+  // Legacy Python service configuration (for backward compatibility)
+  pythonService: {
+    healthCheckUrl: 'http://localhost:5001/health',
+    startupTimeout: 50000, // 50 seconds
+    healthCheckInterval: 1000, // 1 second
+    port: 5001
   },
 
   // WebPreferences configuration
