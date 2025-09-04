@@ -67,7 +67,7 @@ const AppConfig = {
 
   // Development configuration
   development: {
-    openDevTools: true,
+    openDevTools: false,
     enableLogging: true
   }
 };
